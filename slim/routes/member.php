@@ -1,4 +1,5 @@
 <?php
+define("VALUE_DATE", "Value Date: ");
 
 // Restricted to logged in current user
 $app->group('/member', $authenticate($app), function () use ($app) {
@@ -228,6 +229,7 @@ $app->group('/member', $authenticate($app), function () use ($app) {
 					$time = _bankDateToTime($bankTransactionData->EffectiveDate);
 
 					if($time < $user->processed) {
+						// We have already processed past this transaction, ignore it
 						continue;
 					}
 				
@@ -236,16 +238,17 @@ $app->group('/member', $authenticate($app), function () use ($app) {
 					$amountString = str_replace(",", "", $amountString); 
 					$amount = floatval($amountString);
 					$direction = substr($bankTransactionData->Amount, strlen($bankTransactionData->Amount) - 2, strlen($bankTransactionData->Amount));
-
 					if($direction == 'DR') {
 						$amount = 0 - $amount;
 					}
-					
 					$description = $bankTransactionData->Description;
 
-					// check its not a 'redo' pending
-					if (strpos($description, 'Value Date') !== false) {
-					    continue;
+					// Check for delayed transactions
+					$valueDateIndex = strpos($description, VALUE_DATE);
+					if ($valueDateIndex !== false) {
+						// Update the time
+						$timeString = substr($description, $valueDateIndex + strlen(VALUE_DATE));
+    					$time = _bankDateToTime($timeString);
 					}
 				
 					// Do we already have it stored?
