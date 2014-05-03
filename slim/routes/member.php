@@ -234,14 +234,9 @@ $app->group('/member', $authenticate($app), function () use ($app) {
 					}
 				
 					// Get out the values
-					$amountString = substr($bankTransactionData->Amount, 1, strlen($bankTransactionData->Amount) - 3);
-					$amountString = str_replace(",", "", $amountString); 
-					$amount = floatval($amountString);
-					$direction = substr($bankTransactionData->Amount, strlen($bankTransactionData->Amount) - 2, strlen($bankTransactionData->Amount));
-					if($direction == 'DR') {
-						$amount = 0 - $amount;
-					}
+					$amount = _bankAmountValue($bankTransactionData->Amount);
 					$description = $bankTransactionData->Description;
+					$descriptionMatcher = $description;
 
 					// Check for delayed transactions
 					$valueDateIndex = strpos($description, VALUE_DATE);
@@ -249,11 +244,12 @@ $app->group('/member', $authenticate($app), function () use ($app) {
 						// Update the time
 						$timeString = substr($description, $valueDateIndex + strlen(VALUE_DATE));
     					$time = _bankDateToTime($timeString);
+    					$descriptionMatcher = '%' . _bankDescriptionFirstWord($description)  . '%';
 					}
 				
 					// Do we already have it stored?
-					$existingTransactions = R::findOne('transaction', 'amount = :amount AND time = :time AND description = :description',
-			        	array(':amount' => $amount, ':description' => $description, ':time' => $time)
+					$existingTransactions = R::findOne('transaction', 'amount = :amount AND time = :time AND description LIKE :description',
+			        	array(':amount' => $amount, ':description' => $descriptionMatcher, ':time' => $time)
 			    	);
 
 			    	if(!$existingTransactions) {
@@ -311,10 +307,31 @@ $app->group('/member', $authenticate($app), function () use ($app) {
 	});
 });
 
+/**
+ * Converts a bank time string to a unix time stamp
+ * @param  [type] $bankDate [description]
+ * @return [type]           [description]
+ */
 function _bankDateToTime($bankDate) {
 	$parts = explode("/", $bankDate);
 	$australianTime = $parts[0] . "-" . $parts[1] . "-20" . $parts[2];
 	return strtotime($australianTime);
+}
+
+function _bankDescriptionFirstWord($description) {
+	$parts = explode(" ", $description);
+	return $parts[0];
+}
+
+function _bankAmountValue($bankAmount) {
+	$amountString = substr($bankAmount, 1, strlen($bankAmount) - 3);
+	$amountString = str_replace(",", "", $amountString); 
+	$amount = floatval($amountString);
+	$direction = substr($bankAmount, strlen($bankAmount) - 2, strlen($bankAmount));
+	if($direction == 'DR') {
+		$amount = 0 - $amount;
+	}
+	return $amount;
 }
 
 
