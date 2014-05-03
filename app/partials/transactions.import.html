@@ -1,0 +1,43 @@
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <button class="btn btn-default pull-left" ui-sref="goals.index"><i class="fa fa-angle-left"> Back</i>
+            </button>
+            <h2>Sync</h2>
+        </div>
+    </div>
+
+    <ul class="list-group">
+        <li class="list-group-item" ng-hide="transactions.length">
+            <p class="text-muted">No transactions to sync.</p>
+        </li>
+
+        <a href class="list-group-item" ng-repeat="transaction in transactions | orderBy:'id'" ui-sref="transaction.edit({transactionId: transaction.id})" ng-class="{'disabled': $index > 0}">
+
+            <div class="row">
+                <!-- Available amount -->
+                <div class="col-xs-1">
+                    <i class="fa fa-circle-o"></i>
+                </div>
+                <div class="col-xs-5">
+                    ${{ transaction.amount | number:2 }}
+                </div>
+                <!-- /Available amount -->
+
+                <!-- Description -->
+                <div class="col-xs-5">
+                    <div>
+                        <strong ng-bind-html="transaction.description"></strong>
+                        <p>{{ transaction.time * 1000 | date:'EEE d MMMM yyyy' }}</p>
+                    </div>
+                    <div>
+                        <!-- ${{ goal.amount }} available on {{ goal.due * 1000 | date:'EEE d MMMM yyyy' }} -->
+                    </div>
+                </div>
+                <div class="col-xs-1">
+                    <i class="fa fa-chevron-right"></i>
+                </div>
+            </div>
+        </a>
+    </ul>
+</div>

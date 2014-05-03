@@ -1,0 +1,19 @@
+{
+    "repositories": [{
+        "type": "package",
+        "package": {
+            "name": "netbank",
+            "version": "1.0",
+            "source": {
+                "url": "https://github.com/icodethings/netbank.git",
+                "type": "git",
+                "reference": "de04590df881ab402ff76dccf3138b397a306106"
+            }
+        }
+    }],
+    "require": {
+        "netbank": "1.0",
+        "gabordemooij/redbean": "dev-master",
+        "slim/slim": "2.*"
+    }
+}

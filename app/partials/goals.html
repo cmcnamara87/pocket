@@ -1,0 +1,411 @@
+<div class="container">
+
+    <ul class="list-group">
+        <li class="list-group-item">
+            <button class="btn btn-default pull-right" ui-sref="transactions.import">
+                <i class="fa fa-refresh"></i> 
+            </button>
+            <h3 style="margin: 4px;">Pocket</h3>
+        </li>
+        <li href class="list-group-item list-group-item-warning" ng-show="isOld" ui-sref="transactions.import">
+            <strong>Warning</strong>
+            You lasted synced
+            <span am-time-ago="user.synced * 1000" am-preprocess="unix"></span>. Your information is out of date.
+        </li>
+        <li href class="list-group-item list-group-item-info" ng-show="!isOld">
+            <strong>Today</strong>
+            {{ user.processed * 1000 | date:'EEE d MMMM yyyy' }}
+        </li>
+        <a href class="list-group-item" ui-sref="change" ng-class="{'list-group-item-danger': user.change < 0}">
+            <div class="row">
+                <!-- Available amount -->
+                <div class="col-md-2 col-xs-5">
+                    <h3>${{ user.change | number:2 }}</h3>
+                    <!-- <div class="progress" ng-show="user.change < 0">
+                        <div class="progress-bar progress-bar-danger" style="width: 100%">
+                        </div>
+                    </div>
+                    <div class="progress" ng-show="user.change >= 0">
+                        <div class="progress-bar progress-bar-success" style="width: 100%">
+                        </div>
+                    </div> -->
+                </div>
+                <!-- /Available amount -->
+
+                <!-- Description -->
+                <div class="col-md-9 col-xs-5">
+                    <div>
+                        <strong>Change
+                            <span ng-show="user.change < 0">- Watch your spending</span>
+                        </strong>
+                        <div>
+                            <!-- Change is positive -->
+                            <span ng-show="user.change >= 0">
+                                ${{ user.change + user.dailyIncome - user.dailyIncomeAllocated | number:2 }} available tomorrow.
+                            </span>
+
+                            <!-- Change is negative, but we are still saving money -->
+                            <span ng-show="user.change < 0 && (user.dailyIncome > user.dailyIncomeAllocated)">
+                                Debt paid off in {{ change.debtDayEstimate }} days.
+                            </span>
+
+                            <!-- Change is negative, and we aren't saving -->
+                            <span ng-show="user.change < 0 && (user.dailyIncome < user.dailyIncomeAllocated)">
+                                Debt unable to be paid off. Reduce your goals, you have allocated more than your income.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-1">
+                    <i class="fa fa-chevron-right"></i>
+                </div>
+            </div>
+        </a>
+
+        <!-- 1969.61, 8 months to go = 6827.981333333 -->
+        <a href class="list-group-item" ng-class="{'list-group-item-danger': goal.spending < 0}" ng-repeat="goal in goals.now" ui-sref="pocket({goalId: goal.id})">
+
+            <div class="row" ng-class="{'text-muted': goal.spending === 0}">
+                <!-- Available amount -->
+                <div class="col-md-2 col-xs-5">
+                    <h3>${{ goal.spending | number:2 }}</h3>
+                    <!-- <div class="progress" ng-show="goal.spending >= 0">
+                        <div class="progress-bar progress-bar-success" style="width: {{ goal.spending / goal.amount * 100 }}%">
+                        </div>
+                    </div> -->
+                    <!--   <div class="progress" ng-show="goal.spending < 0">
+                        <div class="progress-bar progress-bar-danger" style="width: 100%">
+                        </div>
+                    </div> -->
+                </div>
+                <!-- /Available amount -->
+
+                <!-- Description -->
+                <div class="col-md-9 col-xs-5">
+                    <div>
+                        <strong>{{ goal.name }}</strong>
+                    </div>
+                    <div class="text-muted">
+                        Refills
+                        <!-- {{ goal.due * 1000 | date:'EEE d MMMM yyyy' }} -->
+                        <span am-time-ago="goal.due * 1000" am-preprocess="unix"></span>
+                        ({{ goal.due * 1000 | date:'d MMMM' }})
+                    </div>
+                </div>
+                <div class="col-xs-1">
+                    <i class="fa fa-chevron-right"></i> 
+                </div>
+            </div>
+        </a>
+
+    </ul>
+
+    <!-- Goals -->
+    <ul class="list-group">
+        <!-- Header -->
+        <li class="list-group-item">
+            <button class="btn btn-default pull-right" ui-sref="goals.create"><i class="fa fa-plus"></i>
+            </button>
+            <h3 style="margin: 4px;">Goals</h3>
+        </li>
+        <!-- /Header -->
+
+        <!-- Progress bar -->
+        <li class="list-group-item" ng-show="user.dailyIncome > user.dailyIncomeAllocated">
+            <div class="progress" style="margin-bottom: 0;">
+
+                <div ng-repeat="goal in goals.future | orderBy:'daily'" class="progress-bar progress-bar-allocated" style="width: {{ goal.daily / user.dailyIncome * 100 | number:0 }}%" tooltip="${{ goal.daily | number:2 }} {{ (goal.daily / user.dailyIncome * 100) | number:0 }}% - {{ goal.name }} ${{ goal.amount | number:2 }}">
+                </div>
+
+                <div class="progress-bar progress-bar-success" style="width: {{ (user.dailyIncome - user.dailyIncomeAllocated) / user.dailyIncome * 100 | number:0 }}%" tooltip="  Unallocated ${{ user.dailyIncome - user.dailyIncomeAllocated | number:2 }}">
+                </div>
+            </div>
+        </li>
+        <!-- Progress bar -->
+
+        <!-- Over budget message -->
+        <li class="list-group-item list-group-item-danger" ng-show="user.dailyIncome < user.dailyIncomeAllocated">
+            <div style="margin-bottom: 16px;">
+                <strong>Warning!</strong>
+                You are currently over budget by ${{ user.dailyIncomeAllocated - user.dailyIncome | number:2 }}. Please adjust your savings goals.
+            </div>
+            <div class="progress">
+                <div class="progress-bar " style="width: {{ (user.dailyIncome * 2 - user.dailyIncomeAllocated) / user.dailyIncome * 100 | number:0 }}% " tooltip="${{ user.dailyIncome | number:2 }} daily income">
+                </div>
+
+                <div class="progress-bar progress-bar-danger " style="width: {{ (user.dailyIncomeAllocated - user.dailyIncome) / user.dailyIncome * 100 | number:0 }}% " tooltip="${{ user.dailyIncomeAllocated - user.dailyIncome | number:2 }} over budget">
+                </div>
+            </div>
+        </li>
+        <!-- /Over budget message -->
+
+        <li class="list-group-item " ng-hide="goals.future.length ">No future goals.</li>
+
+        <!-- Goal -->
+        <a href class="list-group-item " ng-repeat="goal in goals.future | orderBy: 'daily' " ui-sref="goal.view({goalId: goal.id}) ">
+            <div class="row ">
+                <!-- Available amount -->
+                <div class="col-md-2 col-xs-5 ">
+                    <h3>${{ goal.daily | number:2 }}</h3>
+                    <!-- <strong>${{ goal.savings | number: 2}}</strong>
+                    <div class="progress ">
+                        <div class="progress-bar progress-bar-info " style="width: {{ goal.savings / goal.amount * 100 }}% ">
+                        </div>
+                    </div> -->
+                </div>
+                <!-- /Available amount -->
+
+                <!-- Description -->
+                <div class="col-md-9 col-xs-5">
+                    <div>
+                        <strong>{{ goal.name }} ({{ (goal.daily / user.dailyIncome * 100) | number:2}}%)</strong>
+                    </div>
+                    <div class="text-muted">
+                        ${{ goal.savings | number:2 }} of ${{ goal.amount | number:2 }} - Available
+                        <span am-time-ago="goal.due * 1000" am-preprocess="unix"></span>
+                        ({{ goal.due * 1000 | date:'d MMMM' }})
+                        <!-- ({{ goal.due * 1000 | date:'EEE d MMMM yyyy' }}) -->
+                    </div>
+                </div>
+                <div class="col-xs-1 ">
+                    <i class="fa fa-chevron-right "></i>
+                </div>
+            </div>
+        </a>
+        <!-- /Goal -->
+    </ul>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <h3>Settings</h3>
+        </li>
+        <li class="list-group-item">
+            <form>
+                <div class="form-group">
+                    <label for="">Income</label>
+                    <input type="text" class="form-control" ng-model="user.income">
+                </div>
+                <div class="form-group">
+                    <label for="">Income Period</label>
+                    <select ng-model="user.incomePeriod " class="form-control">
+                        <option value="7 ">Weekly</option>
+                        <option value="14 ">Fortnightly</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Next Due</label>
+                    <input type="text" class="form-control" ng-model="user.due">
+                </div>
+
+            </form>
+
+
+            <pre>
+                {{ user | json }}    
+            </pre>
+        </li>
+    </ul>
+    <div class="row ">
+        <div class="col-md-12 ">
+
+            <!--<ul>
+                <li ng-repeat="(reason, amount) in pockets ">{{ reason}} - ${{ amount | number:2 }}</li>
+            </ul>
+
+            <div class="panel panel-default ">
+                <div class="panel-body ">
+                    <h3>Today</h3>
+                    <div>
+                        <div class="progress ">
+                            <div class="progress-bar progress-bar-success " style="width: {{ slice.percent }}% " tooltip="{{ slice.percent | number:0 }}% - {{ slice.label }} ${{ slice.amount | number:2 }} " ng-repeat="slice in slices " ng-class="{ 'progress-bar-success': $index % 2, 'progress-bar-info': !($index % 2)} ">
+                                <span class="sr-only ">{{ slice.percent }}% {{ slice.label }}</span>
+                            </div>
+
+                            <div class="progress-bar progress-bar-warning " style="width: {{ 100 - dailyPercentAllocated }}% " tooltip="Unallocated ${{ dailyUnallocated | number:2 }} ">
+                                <span class="sr-only ">Unallocated</span>
+                            </div>
+
+                        </div>
+                        <div>
+                            ${{ user.income / user.incomePeriod | number:2 }} / day - Allocated: ${{ dailyAllocated | number:2 }} ({{ dailyPercentAllocated | number:0 }}%) - Remaining: ${{ dailyUnallocated | number:2 }}
+                        </div>
+
+                        <ul>
+                            <li ng-repeat="slice in slices | orderBy: '-percent' ">
+                                {{ slice.percent | number:1 }}% - ${{ slice.amount | number:2 }} {{ slice.label }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-default pull-right " ui-sref="goals.add "><i class="fa fa-plus "></i> Add Goal</button>
+            <h2>Goals</h2>
+
+            <div ng-show="$state.includes( 'goals.add') ">
+                <form action=" ">
+                    <div class="form-group ">
+                        <label>Type</label>
+                        <select class="form-control " ng-model="goal.type ">
+                            <option value="need ">Need</option>
+                            <option value="want ">Want</option>
+                        </select>
+                    </div>
+                    <div class="form-group ">
+                        <label>Amount</label>
+                        <div class="input-group ">
+                            <span class="input-group-addon ">$</span>
+                            <input type="number " class="form-control " ng-model="goal.goalAmount ">
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <label>For</label>
+                        <input type="text " class="form-control " ng-model="goal.for ">
+                    </div>
+                    <div class="form-group ">
+                        <label>Due</label>
+                        <input type="date " class="form-control " ng-model="goal.firstDue ">
+                    </div>
+                    <div class="form-group ">
+                        <label>Repeat</label>
+                        <select class="form-control " ng-model="goal.repeat ">
+                            <option value="none ">Never</option>
+                            <option value="day ">Every Day</option>
+                            <option value="weekday ">Every Week Day</option>
+                            <option value="week ">Every Week</option>
+                            <option value="fortnight ">Every Fortnight</option>
+                            <option value="month ">Every Month</option>
+                            <option value="quarter ">Every Quarter</option>
+                            <option value="year ">Every Year</option>
+                        </select>
+                    </div>
+                    <button type="submit " class="btn btn-primary " ng-click="addGoal(goal) ">Add</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col-md-12 ">
+            <div class="panel panel-info ">
+                <div class="panel-body ">
+                    <h4>Loose Change</h4>
+                    <h5>Available Balance ${{ user.ownAccount[0].available_amount }}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row " ng-repeat="goal in goals | orderBy: 'nextDue' ">
+        <div class="col-md-12 ">
+
+            <div class="panel panel-default ">
+                <div class="panel-body ">
+                    <div class="row " ng-show="$state.includes( 'goals.edit', {goalId: goal.id}) ">
+                        <div class="col-md-12 ">
+                            <form action=" ">
+                                <div class="form-group ">
+                                    <label>Type</label>
+                                    <select class="form-control " ng-model="goal.type ">
+                                        <option value="need ">Need</option>
+                                        <option value="want ">Want</option>
+                                    </select>
+                                </div>
+                                <div class="form-group ">
+                                    <label>Amount</label>
+                                    <div class="input-group ">
+                                        <span class="input-group-addon ">$</span>
+                                        <input type="number " class="form-control " ng-model="goal.goalAmount " required>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label>For</label>
+                                    <input type="text " class="form-control " ng-model="goal.for ">
+                                </div>
+                                <div class="form-group ">
+                                    <label>Due</label>
+                                    <input type="date " class="form-control " ng-model="goal.firstDue ">
+                                </div>
+                                <div class="form-group ">
+                                    <label>Repeat</label>
+                                    <select class="form-control " ng-model="goal.repeat ">
+                                        <option value="none ">Never</option>
+                                        <option value="day ">Every Day</option>
+                                        <option value="weekday ">Every Week Day</option>
+                                        <option value="week ">Every Week</option>
+                                        <option value="fortnight ">Every Fortnight</option>
+                                        <option value="month ">Every Month</option>
+                                        <option value="quarter ">Every Quarter</option>
+                                        <option value="year ">Every Year</option>
+                                    </select>
+                                </div>
+                                <button type="submit " class="btn btn-primary " ng-click="updateGoal(goal) ">Update</button>
+                                <button type="submit " class="btn btn-default " ui-sref="goals ">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row " ng-hide="$state.includes( 'goals.edit', {goalId: goal.id}) ">
+                        <div class="col-md-10 ">
+                            I {{ goal.type }}
+                            <strong>${{ goal.goalAmount }}</strong>
+                            for
+                            <strong>{{ goal.for}}</strong>
+                            <span ng-show="goal.repeat ">
+                                every {{ goal.repeat }}
+                            </span>
+                            <span>
+
+                            </span>
+                            <span>{{ goal.availableAmount }} {{ goal.savedAmount}}</span>
+
+                            <h5>Available Balance: ${{ goal.availableAmount | number:2}}</h5>
+                            <small>${{ goal.goalAmount }} available on {{ goal.nextDue * 1000 | date:'EEE d MMMM yyyy' }}</small>
+                            <div class="progress ">
+                                <div class="progress-bar progress-bar-success " style="width: {{ goal.availableAmount / goal.goalAmount * 100 }}% " tooltip="{{ goal.availableAmount / goal.goalAmount * 100 | number:0 }}% - ${{ goal.availableAmount | number:2 }} / ${{ goal.goalAmount | number:2 }} ">
+                                    <span class="sr-only ">{{ goal.availableAmount / goal.goalAmount }}% {{ goal.for }}</span>
+                                </div>
+                            </div>
+
+                            <div class="progress ">
+                                <div class="progress-bar progress-bar-info " style="width: {{ goal.savedAmount / goal.goalAmount * 100 }}% " tooltip="{{ goal.savedAmount / goal.goalAmount * 100 | number:0 }}% - ${{ goal.savedAmount | number:2 }} / ${{ goal.goalAmount | number:2 }} ">
+                                    <span class="sr-only ">{{ goal.savedAmount / goal.goalAmount }}% {{ goal.for }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 " style="text-align: right; ">
+                            <button class="btn btn-default btn-xs " ui-sref="goals.edit({goalId: goal.id}) ">
+                                <i class="fa fa-pencil "></i>
+                            </button>
+                            <button class="btn btn-default btn-xs " ng-click="deleteGoal(goal) ">
+                                <i class="fa fa-trash-o "></i>
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col-md-12 ">
+            <div>
+                <h2>Setup</h2>
+                <form action=" ">
+                    <div class="form-group ">
+                        <label>Income</label>
+                        <input type="text " class="form-control " ng-model="user.income ">
+                    </div>
+                    <div class="form-group ">
+                        <label>Period</label>
+                        <select ng-model="user.incomePeriod ">
+                            <option value="7 ">Weekly</option>
+                            <option value="14 ">Fortnightly</option>
+                            <option value="28 ">Monthly</option>
+                        </select>
+                    </div>
+                </form>
+                <pre>
+                    {{ user | json }}
+                </pre>
+            </div>
+        </div>
+    </div>-->
+        </div>

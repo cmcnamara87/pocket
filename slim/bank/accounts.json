@@ -1,0 +1,95 @@
+{
+    "8d72f9f97ec3915dfb87d7e16b1e5d251eca1cda": {
+        "EnableLogging": false,
+        "ErrorMessages": [],
+        "IsSessionTimeout": false,
+        "IsUnsafeActionDetected": false,
+        "SID": "qMa0PPTGvgE%3d",
+        "Switches": [{
+            "IsEnabled": false,
+            "Name": "CardActivation"
+        }, {
+            "IsEnabled": false,
+            "Name": "CCOffers"
+        }],
+        "WarningMessages": [],
+        "AccountAction": [1, 2, 3, 4, 5, 6, 9],
+        "AccountName": "Complete Access",
+        "AccountNumber": "06 4173 1026 6991",
+        "AccountNumberHash": "8d72f9f97ec3915dfb87d7e16b1e5d251eca1cda",
+        "AvailableFunds": "$7,142.95 CR",
+        "Balance": "$7,164.64 CR",
+        "CardExpirationDate": null,
+        "CardLifeCycleStatusCode": null,
+        "CardNumberHash": "60d2ec24c00d8d3ba3072e71e7a8832c9ae77853",
+        "CardSequenceNumber": null,
+        "ElectronicAccountType": null,
+        "Id": 1,
+        "IsInactiveCard": false,
+        "IsMoreThanOneToSign": false,
+        "ProductSystemCode": "DDA",
+        "ProductTypeCode": "56"
+    },
+    "a5089e00171b19234c64e3c1ff3e3fc9cfd81914": {
+        "EnableLogging": false,
+        "ErrorMessages": [],
+        "IsSessionTimeout": false,
+        "IsUnsafeActionDetected": false,
+        "SID": "qMa0PPTGvgE%3d",
+        "Switches": [{
+            "IsEnabled": false,
+            "Name": "CardActivation"
+        }, {
+            "IsEnabled": false,
+            "Name": "CCOffers"
+        }],
+        "WarningMessages": [],
+        "AccountAction": [1, 2, 4, 5, 9],
+        "AccountName": "NetBank Saver",
+        "AccountNumber": "06 4173 1035 5847",
+        "AccountNumberHash": "a5089e00171b19234c64e3c1ff3e3fc9cfd81914",
+        "AvailableFunds": "$19,614.41 CR",
+        "Balance": "$19,614.41 CR",
+        "CardExpirationDate": null,
+        "CardLifeCycleStatusCode": null,
+        "CardNumberHash": "0ae49faf8d3e5671e7bd91db956d7527c89bedad",
+        "CardSequenceNumber": null,
+        "ElectronicAccountType": null,
+        "Id": 2,
+        "IsInactiveCard": false,
+        "IsMoreThanOneToSign": false,
+        "ProductSystemCode": "DDA",
+        "ProductTypeCode": "46"
+    },
+    "f473671b334cc1158a8d32fd2694c7799b00f898": {
+        "EnableLogging": false,
+        "ErrorMessages": [],
+        "IsSessionTimeout": false,
+        "IsUnsafeActionDetected": false,
+        "SID": "qMa0PPTGvgE%3d",
+        "Switches": [{
+            "IsEnabled": false,
+            "Name": "CardActivation"
+        }, {
+            "IsEnabled": false,
+            "Name": "CCOffers"
+        }],
+        "WarningMessages": [],
+        "AccountAction": [1, 2, 3, 4, 5, 6, 9, 10],
+        "AccountName": "Visa",
+        "AccountNumber": "4940 5252 8010 1297",
+        "AccountNumberHash": "f473671b334cc1158a8d32fd2694c7799b00f898",
+        "AvailableFunds": "$2,399.74 CR",
+        "Balance": "$1,591.59 DR",
+        "CardExpirationDate": null,
+        "CardLifeCycleStatusCode": null,
+        "CardNumberHash": "efd614354b1518e32ef3075e9457705f73341de7",
+        "CardSequenceNumber": null,
+        "ElectronicAccountType": null,
+        "Id": 3,
+        "IsInactiveCard": false,
+        "IsMoreThanOneToSign": false,
+        "ProductSystemCode": "VCD",
+        "ProductTypeCode": "07"
+    }
+}
