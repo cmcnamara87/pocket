@@ -4,6 +4,12 @@ angular.module('sliceApp')
     .controller('GoalsCtrl', function($scope, goals, user, $filter) {
         // Split the goals into now and future
 
+        angular.forEach(goals, function(goal) {
+            if (goal.spending) {
+                goal.spending = (goal.spending * 100).toFixed(2) / 100;
+            }
+        });
+
         $scope.goals = {};
         $scope.user = user;
         $scope.goals.now = $filter('filter')(goals, function(goal) {
