@@ -233,32 +233,44 @@ $app->group('/member', $authenticate($app), function () use ($app) {
 						continue;
 					}
 				
-					// Get out the values
-					$amount = _bankAmountValue($bankTransactionData->Amount);
-					$description = $bankTransactionData->Description;
-					$descriptionMatcher = $description;
+					$cleanTransaction = _bankTransactionClean($bankTransactionData);
+				
+					// Search through the bank data for other identical transactions
+					$matchCount = 0;
+					foreach($bankTransactionData2 as $bankTransactionData2) {
+						// Get the transaction
+						$cleanTransaction2 = _bankTransactionClean($bankTransactionData2);
+
+						// Get the first ones
+						$descriptionFirstWord = _bankDescriptionFirstWord($cleanTransaction1->description);
+						$descriptionFirstWord2 = _bankDescriptionFirstWord($cleanTransaction2->description);
+						
+						if($cleanTransaction->amount === $cleanTransaction2->amount 
+							&& $descriptionFirstWord === $descriptionFirstWord2
+							&& $cleanTransaction->time === $cleanTransaction2->time
+							) {
+							// Its a match
+							$matchCount++;
+						} 
+					}
 
 					// Check for delayed transactions
-					$valueDateIndex = strpos($description, VALUE_DATE);
-					if ($valueDateIndex !== false) {
-						// Update the time
-						$timeString = substr($description, $valueDateIndex + strlen(VALUE_DATE));
-    					$time = _bankDateToTime($timeString);
+					if (_bankTransactionIsDelayed($cleanTransaction->description)) {
     					$descriptionMatcher = '%' . _bankDescriptionFirstWord($description)  . '%';
+					} else {
+						$descriptionMatcher = $cleanTransaction->description;
 					}
-				
+
 					// Do we already have it stored?
-					$existingTransactions = R::findOne('transaction', 'amount = :amount AND time = :time AND description LIKE :description',
+					$numOfExistingTransactions = R::count('transaction', 'amount = :amount AND time = :time AND description LIKE :description',
 			        	array(':amount' => $amount, ':description' => $descriptionMatcher, ':time' => $time)
 			    	);
 
-			    	if(!$existingTransactions) {
+			    	if($matchCount > $numOfExistingTransactions) {
 			    		// Not stored, store it
 			    		$transaction = R::dispense('transaction');
+			    		$transaction->import($cleanTransaction);
 				    	$transaction->account = SPENDING_ACCOUNT;
-				    	$transaction->amount = $amount;
-				    	$transaction->description = $description;
-				    	$transaction->time = $time;
 				    	$transaction->user = $user;
 				    	$transaction->goalId = NULL;
 				    	R::store($transaction);
@@ -306,6 +318,26 @@ $app->group('/member', $authenticate($app), function () use ($app) {
 		echo json_encode($transaction->export(), JSON_NUMERIC_CHECK);
 	});
 });
+
+function _bankTransactionClean($transaction) {
+	$cleanTransaction = new stdClass();
+	$cleanTransaction->amount = _bankAmountValue($bankTransactionData->Amount);
+	$cleanTransaction->description = $bankTransactionData->Description;
+
+	// Check for delayed transactions
+	if (!_bankTransactionIsDelayed($description)) {
+		$cleanTransaction->time = _bankDateToTime($bankTransactionData->EffectiveDate);
+	} else {
+		$timeString = substr($description, $valueDateIndex + strlen(VALUE_DATE));
+		$cleanTransaction->time = _bankDateToTime($timeString);
+	}
+	return $cleanTransaction;
+}
+
+function _bankTransactionIsDelayed($description) {
+	$valueDateIndex = strpos($description, VALUE_DATE);
+	return $valueDateIndex !== false;
+}
 
 /**
  * Converts a bank time string to a unix time stamp
