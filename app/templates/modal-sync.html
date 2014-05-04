@@ -1,7 +1,19 @@
-<div class="modal">
-    <div class="bar bar-header">
-        <button class="button icon ion-navicon"></button>
-        <h1 class="title">Sync</h1>
-        <button class="button">Edit</button>
-    </div>
+<div class="modal" ng-controller="SyncCtrl">
+    <ion-header-bar align-title="left" class="bar-positive">
+        <div class="buttons">
+            <button class="button" ng-click="doSomething()">Left Button</button>
+        </div>
+        <h1 class="title">Title!</h1>
+        <div class="buttons">
+            <button class="button">Right Button</button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+        <pre>
+            {{ isLoading | json }}
+        </pre>
+        <pre>
+            {{ transactions | json }}
+        </pre>
+    </ion-content>
 </div>

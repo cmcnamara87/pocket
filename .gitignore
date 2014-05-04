@@ -22,12 +22,24 @@ Login.rstst
 
 slim/cookies.txt
 
-slim/cookies.txt
-
-slim/cookies.txt
-
-slim/cookies.txt
-
-slim/cookies.txt
+coverage/**/*.html
 
 *.pass
+
+coverage/Chrome 34.0.1847 (Mac OS X 10.9.2)/scripts/services.js.html
+
+coverage/Chrome 34.0.1847 (Mac OS X 10.9.2)/scripts/index.html
+
+coverage/Chrome 34.0.1847 (Mac OS X 10.9.2)/scripts/controllers/sync.js.html
+
+coverage/Chrome 34.0.1847 (Mac OS X 10.9.2)/scripts/controllers/pockets.js.html
+
+coverage/Chrome 34.0.1847 (Mac OS X 10.9.2)/scripts/controllers/index.html
+
+coverage/Chrome 34.0.1847 (Mac OS X 10.9.2)/scripts/controllers/goals.js.html
+
+coverage/Chrome 34.0.1847 (Mac OS X 10.9.2)/index.html
+
+coverage/Chrome 34.0.1847 (Mac OS X 10.9.2)/scripts/app.js.html
+
+coverage/Chrome 34.0.1847 (Mac OS X 10.9.2)/scripts/controllers.js.html

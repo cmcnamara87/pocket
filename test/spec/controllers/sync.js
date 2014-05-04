@@ -29,7 +29,7 @@ describe('Controller: SyncCtrl', function() {
             expect(typeof scope.loadTransactions).toBe('function');
         });
         it('should load in new transactions', function() {
-            expect(scope.isLoading).toBe('true');
+            expect(scope.isLoading).toBe(true);
         });
     });
 
