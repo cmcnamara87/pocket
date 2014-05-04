@@ -65,13 +65,13 @@ $app->get('/users/:userId/bank/accounts/import', function($userId) use ($app) {
 	}
 });
 $app->get('/test/bankaccounts', function() use ($app) {
-	$passwords = json_decode(file_get_contents("bank/.passwords"));
+	$passwords = json_decode(file_get_contents("bank/bank.pass"));
 	$netbank = new NetBank($passwords->netbank->username, $passwords->netbank->password);
 	$bankAccounts = $netbank->retrieveAccounts();
 	echo json_encode($bankAccounts);
 });
 $app->get('/test/transactions/:accountId', function($accountId) use ($app) {
-	$passwords = json_decode(file_get_contents("bank/.passwords"));
+	$passwords = json_decode(file_get_contents("bank/bank.pass"));
 	$netbank = new NetBank($passwords->netbank->username, $passwords->netbank->password);
 	
 	$transactions = $netbank->getAccountTransactions($accountId);
