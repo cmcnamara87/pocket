@@ -1,0 +1,57 @@
+<ion-view title="Pocket">
+    <ion-content class="has-header">
+        <ion-nav-buttons side="right">
+            <button class="button" ng-click="sync()">
+                Sync
+            </button>
+        </ion-nav-buttons>
+        <ion-list>
+            <ion-item href="#/tab/friend/{{friend.id}}">
+                <div class="row">
+                    <div class="col col-33">
+                        ${{ user.change | number:2 }}
+                    </div>
+                    <div class="col col-67">
+                        <strong>Change
+                            <span ng-show="user.change < 0">- Watch your spending</span>
+                        </strong>
+                        <div>
+                            <!-- Change is positive -->
+                            <span ng-show="user.change >= 0">
+                                ${{ user.change + user.dailyIncome - user.dailyIncomeAllocated | number:2 }} available tomorrow.
+                            </span>
+
+                            <!-- Change is negative, but we are still saving money -->
+                            <span ng-show="user.change < 0 && (user.dailyIncome > user.dailyIncomeAllocated)">
+                                Debt paid off in {{ change.debtDayEstimate }} days.
+                            </span>
+
+                            <!-- Change is negative, and we aren't saving -->
+                            <span ng-show="user.change < 0 && (user.dailyIncome < user.dailyIncomeAllocated)">
+                                Debt unable to be paid off. Reduce your goals, you have allocated more than your income.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </ion-item>
+            <ion-item ng-repeat="pocket in pockets" type="item-text-wrap" href="#/tab/friend/{{friend.id}}">
+                <div class="row">
+                    <div class="col col-33">
+                        ${{ pocket.spending | number:2 }}
+                    </div>
+                    <div class="col col-67">
+                        <div>
+                            <strong>{{ pocket.name }}</strong>
+                        </div>
+                        <div class="text-muted">
+                            Refills
+                            <!-- {{ goal.due * 1000 | date:'EEE d MMMM yyyy' }} -->
+                            <span am-time-ago="pocket.due" am-preprocess="unix"></span>
+                            ({{ pocket.due * 1000 | date:'d MMMM' }})
+                        </div>
+                    </div>
+                </div>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

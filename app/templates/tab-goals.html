@@ -1,0 +1,25 @@
+<ion-view title="Goals">
+    <ion-content class="has-header">
+        <ion-list>
+            <ion-item ng-repeat="goal in goals" type="item-text-wrap" href="#/tab/friend/{{friend.id}}">
+                <div class="row">
+                    <div class="col col-33">
+                        ${{ goal.daily | number:2 }}
+                    </div>
+                    <div class="col col-67">
+                        <div>
+                            <strong>{{ goal.name }} ({{ (goal.daily / user.dailyIncome * 100) | number:2}}%)</strong>
+                        </div>
+                        <div class="text-muted">
+                            ${{ goal.savings | number:2 }} of ${{ goal.amount | number:2 }} - Available
+                            <span am-time-ago="goal.due" am-preprocess="unix"></span>
+                            ({{ goal.due * 1000 | date:'d MMMM' }})
+                            <!-- ({{ goal.due * 1000 | date:'EEE d MMMM yyyy' }}) -->
+                        </div>
+                    </div>
+                </div>
+
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

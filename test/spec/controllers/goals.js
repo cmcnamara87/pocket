@@ -3,7 +3,7 @@
 describe('Controller: GoalsCtrl', function() {
 
     // load the controller's module
-    beforeEach(module('sliceApp'));
+    beforeEach(module('pocketApp'));
 
     var GoalsCtrl,
         scope;
@@ -12,11 +12,12 @@ describe('Controller: GoalsCtrl', function() {
     beforeEach(inject(function($controller, $rootScope) {
         scope = $rootScope.$new();
         GoalsCtrl = $controller('GoalsCtrl', {
-            $scope: scope
+            $scope: scope,
+            goals: []
         });
     }));
 
-    // it('should attach a list of awesomeThings to the scope', function() {
-    //     expect(scope.awesomeThings.length).toBe(3);
-    // });
+    it('should provide a goals property', function() {
+        expect(scope.goals instanceof Array).toBe(true);
+    });
 });

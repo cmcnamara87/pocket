@@ -3,7 +3,7 @@
 describe('Controller: SyncCtrl', function() {
 
     // load the controller's module
-    beforeEach(module('sliceApp'));
+    beforeEach(module('pocketApp'));
 
     var SyncCtrl,
         scope;
@@ -16,7 +16,24 @@ describe('Controller: SyncCtrl', function() {
         });
     }));
 
-    // it('should attach a list of awesomeThings to the scope', function() {
-    //     expect(scope.awesomeThings.length).toBe(3);
-    // });
+    it('should exist', function() {
+        expect( !! SyncCtrl).toBe(true);
+    });
+
+    describe('when created', function() {
+        // Add specs
+        it('should provide a boolean isLoading property', function() {
+            expect(typeof scope.isLoading).toBe('boolean');
+        });
+        it('should provide a loadTransactions function', function() {
+            expect(typeof scope.loadTransactions).toBe('function');
+        });
+        it('should load in new transactions', function() {
+            expect(scope.isLoading).toBe('true');
+        });
+    });
+
+    describe('when destroyed', function() {
+        // Add specs
+    });
 });
