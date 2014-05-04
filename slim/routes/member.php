@@ -237,12 +237,12 @@ $app->group('/member', $authenticate($app), function () use ($app) {
 				
 					// Search through the bank data for other identical transactions
 					$matchCount = 0;
-					foreach($bankTransactionData2 as $bankTransactionData2) {
+					foreach($bankTransactionsData as $bankTransactionData2) {
 						// Get the transaction
 						$cleanTransaction2 = _bankTransactionClean($bankTransactionData2);
 
 						// Get the first ones
-						$descriptionFirstWord = _bankDescriptionFirstWord($cleanTransaction1->description);
+						$descriptionFirstWord = _bankDescriptionFirstWord($cleanTransaction->description);
 						$descriptionFirstWord2 = _bankDescriptionFirstWord($cleanTransaction2->description);
 						
 						if($cleanTransaction->amount === $cleanTransaction2->amount 
@@ -263,7 +263,7 @@ $app->group('/member', $authenticate($app), function () use ($app) {
 
 					// Do we already have it stored?
 					$numOfExistingTransactions = R::count('transaction', 'amount = :amount AND time = :time AND description LIKE :description',
-			        	array(':amount' => $amount, ':description' => $descriptionMatcher, ':time' => $time)
+			        	array(':amount' => $cleanTransaction->amount, ':description' => $descriptionMatcher, ':time' => $cleanTransaction->time)
 			    	);
 
 			    	if($matchCount > $numOfExistingTransactions) {
@@ -320,15 +320,16 @@ $app->group('/member', $authenticate($app), function () use ($app) {
 });
 
 function _bankTransactionClean($transaction) {
+	// Test
 	$cleanTransaction = new stdClass();
-	$cleanTransaction->amount = _bankAmountValue($bankTransactionData->Amount);
-	$cleanTransaction->description = $bankTransactionData->Description;
+	$cleanTransaction->amount = _bankAmountValue($transaction->Amount);
+	$cleanTransaction->description = $transaction->Description;
 
 	// Check for delayed transactions
-	if (!_bankTransactionIsDelayed($description)) {
-		$cleanTransaction->time = _bankDateToTime($bankTransactionData->EffectiveDate);
+	if (!_bankTransactionIsDelayed($cleanTransaction->description)) {
+		$cleanTransaction->time = _bankDateToTime($transaction->EffectiveDate);
 	} else {
-		$timeString = substr($description, $valueDateIndex + strlen(VALUE_DATE));
+		$timeString = _bankTransactionDelayedDate($cleanTransaction->description);
 		$cleanTransaction->time = _bankDateToTime($timeString);
 	}
 	return $cleanTransaction;
@@ -337,6 +338,10 @@ function _bankTransactionClean($transaction) {
 function _bankTransactionIsDelayed($description) {
 	$valueDateIndex = strpos($description, VALUE_DATE);
 	return $valueDateIndex !== false;
+}
+function _bankTransactionDelayedDate($description) {
+	$dateIndex = strpos($description, VALUE_DATE);
+	return substr($description, $dateIndex + strlen(VALUE_DATE));
 }
 
 /**

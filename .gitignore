@@ -4,6 +4,7 @@ dist
 .sass-cache
 app/bower_components
 
+coverage/
 .ftppass
 
 slim/bank/passwords.json
