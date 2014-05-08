@@ -192,6 +192,26 @@ $app->group('/member', $authenticate($app), function () use ($app) {
 		echo json_encode(R::exportAll($transactions), JSON_NUMERIC_CHECK);
 	});
 
+	$app->get('/test', function() {
+		$deplayed = '{
+		    "Amount": "$3.00 DR",
+		    "Balance": "$7,609.35 CR",
+		    "Description": "UQ TRAFFIC AND PARKI ST LUCIA AUSCard xx3462Value Date: 01\/04\/2014",
+		    "EffectiveDate": "03\/04\/14",
+		    "IsPending": false
+		}';
+				$normal = '{
+		    "Amount": "$30.60 DR",
+		    "Balance": "$7,578.75 CR",
+		    "Description": "LAKESIDE ENTERPRISES UNIVERSITY O QLD",
+		    "EffectiveDate": "03\/04\/14",
+		    "IsPending": false
+		}';
+		$dirtyTransaction = json_decode($normal);
+		echo "<pre>";
+		print_r(_bankTransactionClean($dirtyTransaction));
+		echo "</pre>";
+	});
 	/**
 	 * ============
 	 * Transactions
@@ -351,7 +371,14 @@ function _bankTransactionDelayedDate($description) {
  */
 function _bankDateToTime($bankDate) {
 	$parts = explode("/", $bankDate);
-	$australianTime = $parts[0] . "-" . $parts[1] . "-20" . $parts[2];
+
+	$day = $parts[0];
+	$month = $parts[1];
+	$year = $parts[2];
+	if(strlen($year) == 2) {
+		$year = "20" . $year;
+	}
+	$australianTime = $day . "-" . $month . "-" . $year;
 	return strtotime($australianTime);
 }
 

@@ -147,9 +147,9 @@ module.exports = function(grunt) {
             // PHP STUFF
             proxies: [{
                 context: '/slim',
-                host: 'ec2-54-206-66-123.ap-southeast-2.compute.amazonaws.com',
-                // host: 'localhost',
-                // port: 8888
+                // host: 'ec2-54-206-66-123.ap-southeast-2.compute.amazonaws.com',
+                host: 'localhost',
+                port: 8888
             }],
             livereload: {
                 options: {
