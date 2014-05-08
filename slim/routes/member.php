@@ -256,7 +256,7 @@ $app->group('/member', $authenticate($app), function () use ($app) {
 
 					// Check for delayed transactions
 					if (_bankTransactionIsDelayed($cleanTransaction->description)) {
-    					$descriptionMatcher = '%' . _bankDescriptionFirstWord($description)  . '%';
+    					$descriptionMatcher = '%' . _bankDescriptionFirstWord($cleanTransaction->description)  . '%';
 					} else {
 						$descriptionMatcher = $cleanTransaction->description;
 					}
