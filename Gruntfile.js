@@ -169,9 +169,9 @@ module.exports = function(grunt) {
         },
 
         // Automatically inject Bower components into the app
-        'bower-install': {
+        'bowerInstall': {
             app: {
-                html: '<%= yeoman.app %>/index.html',
+                src: '<%= yeoman.app %>/index.html',
                 ignorePath: '<%= yeoman.app %>/'
             }
         },
@@ -450,7 +450,7 @@ module.exports = function(grunt) {
     // directories, we watch all registered files and then copy all un-built assets
     // over to www/. Last step is running ordova prepare so we can refresh the ripple
     // browser tab to see the changes.
-    grunt.registerTask('ripple', ['bower-install', 'copy:all', 'prepare', 'ripple-emulator']);
+    grunt.registerTask('ripple', ['bowerInstall', 'copy:all', 'prepare', 'ripple-emulator']);
     grunt.registerTask('ripple-emulator', function() {
         grunt.config.set('watch', {
             all: {
@@ -494,7 +494,7 @@ module.exports = function(grunt) {
         grunt.task.run([
             'clean:server',
             'notify_hooks',
-            'bower-install',
+            'bowerInstall',
             'concurrent:server',
             'configureProxies:server',
             'autoprefixer',
@@ -513,7 +513,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
-        'bower-install',
+        'bowerInstall',
         'useminPrepare',
         'concurrent:dist',
         'autoprefixer',
