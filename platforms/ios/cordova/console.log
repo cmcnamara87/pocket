@@ -1,0 +1,9 @@
+objc[56459]: Class AXEmojiUtilities is implemented in both /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/PrivateFrameworks/AccessibilityUtilities.framework/AccessibilityUtilities and /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/libAXSpeechManager.dylib. One of the two will be used. Which one is undefined.
+2014-05-17 20:53:07.496 Pocket[56459:70b] Cannot find executable for CFBundle 0xa44e890 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/CertUIFramework.axbundle> (not loaded)
+2014-05-17 20:53:07.507 Pocket[56459:70b] Cannot find executable for CFBundle 0xa2511b0 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/GeoServices.axbundle> (not loaded)
+2014-05-17 20:53:07.555 Pocket[56459:70b] Multi-tasking -> Device: YES, App: YES
+2014-05-17 20:53:07.590 Pocket[56459:70b] Unlimited access to network resources
+2014-05-17 20:53:07.924 Pocket[56459:70b] Resetting plugins due to page load.
+2014-05-17 20:53:08.062 Pocket[56459:70b] Finished load of: file:///Users/cmcnamara87/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/053A3988-F5B9-4017-BA66-775641C0C3E5/Pocket.app/www/index.html
+2014-05-17 20:53:08.111 Pocket[56459:70b] Received Event: deviceready
+Terminating in response to SpringBoard's termination.
